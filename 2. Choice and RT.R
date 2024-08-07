@@ -13,23 +13,24 @@ meanRT <- rep(NA, 10)
 sdRT <- rep(NA, 10)
 
 # Initialise the model
-abs_model <- Zhu23ABS$new(width=1, n_chains=5, nd_time=0.1,
-                          s_nd_time=0.3, lambda = 50, distr_name = 'norm', distr_params = 1)
-# Vary the relative stopping rule
+# using the parameters estimated from Murphy et al.'s data (except `delta`)
+abs_model <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
+                          s_nd_time=0.3, lambda = 100, distr_name = 'norm', distr_params = 1)
+# Vary the value of `delta`
 for (d in 2:11) {
   abs_model$reset_sim_results()
-  abs_model$simulate(stopping_rule = 'relative', delta = d, dec_bdry = 0, 
+  abs_model$simulate(stopping_rule = 'relative', delta = d, dec_bdry = -0.5, 
                      discrim = 1, trial_stim = trial_stim)
   df_temp <- subset(abs_model$sim_results, (rt > 0.1 & rt < 1.5)) # filter the RT
   accuracy[d-1] <- mean(df_temp$accuracy)
-  meanRT[d-1] <- mean(df_temp$sim_results$rt)
-  sdRT[d-1] <- sd(df_temp$sim_results$rt)
+  meanRT[d-1] <- mean(df_temp$rt)
+  sdRT[d-1] <- sd(df_temp$rt)
 }
 
 df <- data.frame(accuracy=accuracy, mean=meanRT, sd=sdRT)
 
 # plot the accuracy-RT plot
-fig <- ggplot(df, aes(accuracy, mean)) + 
+fig1 <- ggplot(df, aes(accuracy, mean)) + 
   geom_errorbar( aes(ymin=mean-sd, ymax=mean+sd)) +
   geom_point(size=2)
 
@@ -38,9 +39,9 @@ fig <- ggplot(df, aes(accuracy, mean)) +
 # generate the stimuli
 trial_stim <- factor(sample(c('left', 'right'), 500, TRUE))
 
-abs_model2 <- Zhu23ABS$new(width=1, n_chains=4, nd_time=0.1,
-                          s_nd_time=0.3, lambda = 50, distr_name = 'norm', distr_params = 1)
-abs_model2$simulate(stopping_rule = 'relative', delta = 3, dec_bdry = 0, 
+abs_model2 <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
+                           s_nd_time=0.3, lambda = 100, distr_name = 'norm', distr_params = 1)
+abs_model2$simulate(stopping_rule = 'relative', delta = 10, dec_bdry = -0.5, 
                    discrim = 1, trial_stim = trial_stim)
 df_sim <- subset(abs_model2$sim_results, (rt > 0.1 & rt < 1.5))
 
@@ -48,6 +49,6 @@ df_sim <- subset(abs_model2$sim_results, (rt > 0.1 & rt < 1.5))
 df_sim$rt_bin <- cut(df_sim$rt, breaks = 10)
 binned_ac <- aggregate(accuracy ~ rt_bin, data = df_sim, FUN = mean)
 
-ggplot(binned_ac, aes(x = rt_bin, y = accuracy)) +
+fig2 <- ggplot(binned_ac, aes(x = rt_bin, y = accuracy)) +
   geom_bar(stat = "identity") +
   labs(x = "RT Bins", y = "Mean Accuracy", title = "Mean Accuracy by RT Bins")
