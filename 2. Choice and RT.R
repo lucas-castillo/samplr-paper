@@ -13,7 +13,7 @@ meanRT <- rep(NA, 10)
 sdRT <- rep(NA, 10)
 
 # Initialise the model
-# using the parameters estimated from Murphy et al.'s data (except `delta`)
+# using the parameters estimated from the data of Murphy et al. (2014) (except `delta`)
 abs_model <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
                           s_nd_time=0.3, lambda = 100, distr_name = 'norm', distr_params = 1)
 # Vary the value of `delta`
@@ -32,7 +32,8 @@ df <- data.frame(accuracy=accuracy, mean=meanRT, sd=sdRT)
 # plot the accuracy-RT plot
 fig1 <- ggplot(df, aes(accuracy, mean)) + 
   geom_errorbar( aes(ymin=mean-sd, ymax=mean+sd)) +
-  geom_point(size=2)
+  geom_point(size=2) +
+  labs(x = "Accuracy", y = "Response Time", title = "Speed-accuracy trade-off")
 
 
 ## Time-controlled processing ------

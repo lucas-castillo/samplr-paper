@@ -18,11 +18,15 @@ abs_model <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
 abs_model$simulate(stopping_rule = 'relative', delta = 10, dec_bdry = -0.5, 
                     discrim = 1, trial_stim = trial_stim)
 
-df <- abs_model1$sim_results %>%
+df_sim <- subset(abs_model$sim_results, (rt > 0.1 & rt < 1.5))
+
+df <- df_sim %>%
   group_by(accuracy) %>%
   summarise(conf = mean(confidence))
 df$accuracy <- factor(df$accuracy, labels = c('Error', 'Correct'))
 
-ggplot(df, aes(accuracy, conf)) +
+fig <- ggplot(df, aes(accuracy, conf)) +
   geom_line(aes(group = 1)) +
-  geom_point(size = 2)
+  geom_point(size = 2) +
+  labs(x = "Choice Outcome", y = "Confidence", title = "The resolution-of-confidence effect")
+fig
