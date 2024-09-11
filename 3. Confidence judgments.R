@@ -20,13 +20,15 @@ abs_model$simulate(stopping_rule = 'relative', delta = 10, dec_bdry = -0.5,
 
 df_sim <- subset(abs_model$sim_results, (rt > 0.1 & rt < 1.5))
 
-df <- df_sim %>%
+df_sim <- df_sim %>%
+  mutate(accuracy = ifelse(accuracy == 1, "Correct", "Error")) %>% 
+  mutate(accuracy = factor(accuracy, levels=c("Error", "Correct")))
+df <- df_sim %>% 
   group_by(accuracy) %>%
-  summarise(conf = mean(confidence))
-df$accuracy <- factor(df$accuracy, labels = c('Error', 'Correct'))
-
-fig <- ggplot(df, aes(accuracy, conf)) +
-  geom_line(aes(group = 1)) +
+  summarise(confidence = mean(confidence))
+fig <- ggplot(df, aes(accuracy, confidence)) +
+  geom_line(aes(group = 1), linewidth = 1) +
   geom_point(size = 2) +
+  geom_jitter(data=df_sim, aes(accuracy, confidence), alpha=.5, width = .1, height = .01) + 
   labs(x = "Choice Outcome", y = "Confidence", title = "The resolution-of-confidence effect")
 fig
