@@ -717,7 +717,7 @@
     },
     "samplr": {
       "Package": "samplr",
-      "Version": "1.0.0",
+      "Version": "1.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -735,7 +735,7 @@
         "stats",
         "testthat"
       ],
-      "Hash": "92aa3dedd8d8aad4de6a060fc7d573b8"
+      "Hash": "b289d3079c0f2c33ff8f89fac0170b62"
     },
     "scales": {
       "Package": "scales",
