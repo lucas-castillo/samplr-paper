@@ -737,6 +737,17 @@
       ],
       "Hash": "b289d3079c0f2c33ff8f89fac0170b62"
     },
+    "samplrData": {
+      "Package": "samplrData",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rdpack"
+      ],
+      "Hash": "6b462848aa5c76a16bb8c48bd57b58e9"
+    },
     "scales": {
       "Package": "scales",
       "Version": "1.3.0",
