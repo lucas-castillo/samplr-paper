@@ -21,3 +21,83 @@ get_measures <- function(v){
   S <- get_shape(v)
   return(tibble(R,A,TP,D,S))
 }
+
+prior <- function(N=1){
+  ## As described in Castillo et al. 2024 --- 
+  list(
+    "proposal_width"=runif(N, 0, 50),
+    "delta_t"=runif(N, 1, 4),
+    "n_chains"=sample(4:6, N, T),
+    "swap_all"=sample(c(T,F), N,T),
+    "L"=sample(1:100, N, T),
+    "alpha"=runif(N, 0, 1)
+  )
+}
+
+simulate <- function(model, params){
+  if (model == "MH"){
+    v <- samplr::sampler_mh(
+      start=rnorm(1, 176.4, 12),
+      distr_name = "norm", 
+      distr_params = c(176.4,12), 
+      sigma_prop = params[["proposal_width"]], 
+      iterations = 200, 
+    )$Samples[,1]
+  } else if (model == "MC3"){
+    v <- samplr::sampler_mc3(
+      start=rnorm(1, 176.4, 12),
+      distr_name = "norm", 
+      distr_params = c(176.4,12), 
+      sigma_prop = params[["proposal_width"]], 
+      nChains = params[["n_chains"]], 
+      delta_T = params[["delta_t"]], 
+      swap_all = params[["swap_all"]],
+      iterations = 200, 
+    )$Samples[,,1]
+  } else if (model == "HMC"){
+    v <- samplr::sampler_hmc(
+      start=rnorm(1, 176.4, 12),
+      distr_name = "norm", 
+      distr_params = c(176.4,12), 
+      epsilon = .1,
+      L = params[["L"]], 
+      iterations = 200, 
+    )$Samples[,1]
+  } else if (model == "REC"){
+    v <- samplr::sampler_rec(
+      start=rnorm(1, 176.4, 12),
+      distr_name = "norm", 
+      distr_params = c(176.4,12), 
+      epsilon = .1,
+      L = params[["L"]], 
+      alpha = params[["alpha"]],
+      iterations = 200, 
+    )$Samples[,1]
+  } else if (model == "MCHMC"){
+    v <- samplr::sampler_mchmc(
+      start=rnorm(1, 176.4, 12),
+      distr_name = "norm", 
+      distr_params = c(176.4,12), 
+      epsilon = .1,
+      L = params[["L"]], 
+      nChains = params[["n_chains"]], 
+      delta_T = params[["delta_t"]], 
+      swap_all = params[["swap_all"]],
+      iterations = 200, 
+    )$Samples[,,1]
+  } else if (model == "MCREC"){
+    v <- samplr::sampler_mcrec(
+      start=rnorm(1, 176.4, 12),
+      distr_name = "norm", 
+      distr_params = c(176.4,12), 
+      epsilon = .1,
+      L = params[["L"]], 
+      nChains = params[["n_chains"]], 
+      delta_T = params[["delta_t"]], 
+      swap_all = params[["swap_all"]], 
+      alpha = params[["alpha"]],
+      iterations = 200, 
+    )$Samples[,,1]
+  }
+  return(v)
+}
