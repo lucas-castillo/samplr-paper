@@ -67,9 +67,10 @@ posterior <- prediction$vote %>%
   ) +
   labs(title="Model Allocation") +
   scale_fill_brewer(name="Model")
-  + guides(fill = guide_legend(nrow = 1))
-
+  + guides(fill = guide_legend(nrow = 1)) + 
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
 )
+
 
 (B <- posterior %>% 
   group_by(id, chains) %>% 
@@ -86,7 +87,7 @@ posterior <- prediction$vote %>%
   ylab("Posterior") + 
   labs(title="Multiple Chains") +
   theme(legend.position = "none") + 
-    ylim(0, 1)
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
 )
 (
 C <- posterior %>% 
@@ -105,7 +106,7 @@ C <- posterior %>%
   ) +
   scale_fill_distiller(palette = "Oranges") +
   theme(legend.position = "none") + 
-    ylim(0, 1)
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
 )
 
 (D <- posterior %>% 
@@ -126,7 +127,7 @@ C <- posterior %>%
   ) +
   scale_fill_distiller(palette = "Purples") +
   theme(legend.position = "none") + 
-    ylim(0, 1)
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
 )
 
 layout <- '
