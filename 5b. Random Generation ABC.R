@@ -84,8 +84,10 @@ posterior <- prediction$vote %>%
   scale_fill_distiller(palette = "Greens") +
   xlab("Participants") + 
   ylab("Posterior") + 
-  labs(title="Chains") +
-  theme(legend.position = "none"))
+  labs(title="Multiple Chains") +
+  theme(legend.position = "none") + 
+    ylim(0, 1)
+)
 (
 C <- posterior %>% 
   group_by(id, gradient) %>% 
@@ -102,7 +104,8 @@ C <- posterior %>%
     axis.ticks = element_blank()
   ) +
   scale_fill_distiller(palette = "Oranges") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+    ylim(0, 1)
 )
 
 (D <- posterior %>% 
@@ -122,7 +125,8 @@ C <- posterior %>%
     axis.ticks = element_blank()
   ) +
   scale_fill_distiller(palette = "Purples") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+    ylim(0, 1)
 )
 
 layout <- '
