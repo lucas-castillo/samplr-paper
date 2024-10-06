@@ -12,18 +12,24 @@ source("src/rg_functions.R")
 source("src/theme.R")
 models <- c("MH", "MC3", "HMC", "REC", "MCHMC", "MCREC")
 
-simulations <- tibble()
-for (model in models){
-  for (i in 1:1000){
-    simulations <- rbind(
-      simulations,
-      prior() %>% 
-        simulate(model, params=.) %>% 
-        get_measures() %>% 
-        mutate(model, i)
-    )
+if ("simulations.RData" %in% list.files("cache")){
+  load("cache/simulations.RData")
+} else {
+  simulations <- tibble()
+  for (model in models){
+    for (i in 1:1000){
+      simulations <- rbind(
+        simulations,
+        prior() %>% 
+          simulate(model, params=.) %>% 
+          get_measures() %>% 
+          mutate(model, i)
+      )
+    }
   }
+  save(simulations, file = "cache/simulations.RData")  
 }
+
 simulations <- simulations %>% 
   mutate(model = factor(model, levels=models))
 observed <- samplrData::castillo2024.rgmomentum.e1 %>% 
