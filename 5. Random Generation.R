@@ -61,10 +61,11 @@ empirical %>%
     fill="grey", linewidth=.5, alpha=.5, color="black"
   ) + 
   coord_flip() + 
+  xlab("Condition") + 
   theme(
     axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text = element_blank(),
+    # axis.title.y = element_blank(),
+    # axis.text = element_blank(),
   )
 
 ggsave("plots/random_generation.png", width = w, height = w/1.44, dpi = 300)
