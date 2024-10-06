@@ -3,6 +3,7 @@ library(magrittr)
 library(tidyr)
 library(ggplot2)
 library(samplr)
+source("src/theme.R")
 set.seed(123)
 
 ### code here

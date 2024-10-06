@@ -7,6 +7,7 @@ library(samplr)
 library(samplrData)
 set.seed(2024)
 source("src/rg_functions.R")
+source("src/theme.R")
 
 get_simulated_random_measures <- function(start, dist, params){
   # prior

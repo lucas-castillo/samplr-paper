@@ -8,6 +8,7 @@ library(samplrData)
 library(abcrf)
 set.seed(2024)
 source("src/rg_functions.R")
+source("src/theme.R")
 models <- c("MH", "MC3", "HMC", "REC", "MCHMC", "MCREC")
 
 simulations <- tibble()

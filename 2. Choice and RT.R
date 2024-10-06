@@ -1,6 +1,7 @@
 # speed-accuracy trade-off
 library(samplr)
 library(ggplot2)
+source("src/theme.R")
 set.seed(2024)
 
 ## Information-controlled processing ------
