@@ -9,33 +9,57 @@ source("src/theme.R")
 set.seed(123)
 e <- .05
 
-v <- sampler_mc3(
-  start = rnorm(1, .5), 
-  distr_name = "norm", 
-  distr_params = c(3, 5), 
-  sigma_prop = 1, 
-  iterations = 500
-)$Samples[,,1]
-psd <- samplr::calc_PSD(v, plot = F)
-tibble(
-  lf=psd$log_freq,
-  lp=psd$log_psd
-) %>% 
+all <- tibble()
+for (i in 1:50){
+  v <- sampler_mc3(
+    start = rnorm(1, 3, .5), 
+    distr_name = "norm", 
+    distr_params = c(3, 5), 
+    sigma_prop = 1, 
+    iterations = 1000, 
+    nChains = 6
+  )$Samples[,,1]
+  psd <- samplr::calc_PSD(v, plot = F)
+  all <- rbind(all, tibble(
+    lf=psd$log_freq,
+    lp=psd$log_psd,
+    intercept = psd$polyfit[2], 
+    slope = psd$polyfit[1],
+    i
+  ))
+}
+label <- paste0(
+  "$\\bar{\\alpha} = ",
+  round(- mean(all$slope), 2),
+  "$"
+)
+label
+
+all %>% 
   ggplot(aes(lf, lp)) + 
-  geom_line() + 
-  geom_abline(intercept = psd$polyfit[2], slope = psd$polyfit[1], color="black", linetype="longdash") + 
-  # 1/f inset
-  geom_segment(x=-2.5, y=0, xend=-1.5, yend=- 1) + 
-  geom_segment(x=-2.5, y=0, xend=-1.5, yend=- .5) + 
-  geom_segment(x=-2.5, y=0, xend=-1.5, yend=- 1.5) + 
-  geom_segment(x=-2.5, y=0, xend=-1.5, yend=- .75) + 
-  geom_segment(x=-2.5, y=0, xend=-1.5, yend=- 1.25) + 
-  annotate("rect", xmin=-2.5-e, ymin=0+e, xmax=-1.5+e, ymax=-1.5-e, fill=NA, colour="black") + 
-  annotate("text", x = -2, y = -1, label="1/f", size=8) + 
+  geom_line(aes(group = i), alpha=.1) + 
+  geom_abline(
+    intercept = mean(all$intercept), 
+    slope = mean(all$slope), 
+    linetype="longdash", 
+    linewidth=1.4,
+    color=RColorBrewer::brewer.pal(3, name = "Blues")[3]
+  ) + 
   annotate("text", x = -1, y = 2.5, 
-           label=glue("alpha == {round(- psd$polyfit[1], 2)}"), 
+           label=TeX(label, output = "character"), 
            size=6, color="black", parse=T) +
-  xlab(TeX("$\\log_{10} (Frequency)$")) +
-  ylab(TeX("$\\log_{10} (PSD)$"))
+  # inset --------
+  annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- 1    - 1) +
+  annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- .5   - 1) +
+  annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- 1.5  - 1) +
+  annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- .75  - 1) +
+  annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- 1.25 - 1) +
+  annotate("rect", xmin=-2.5-e, ymin=0-1+e, xmax=-1.5+e, ymax=-1.5-1-e, fill=NA, colour="black") +
+  annotate("text", x = -2, y = -2.1, label="1/f", size=8) + 
+  # inset END --------
+  xlab(TeX("Log Frequency")) +
+  ylab(TeX("Log Power Spectral Density")) + 
+  scale_x_continuous(limits = c(min(all$lf), max(all$lf)), expand = c(0,0))
+
 
 ggsave("plots/tapping.png", width = w, height = w/2, dpi = 300)
