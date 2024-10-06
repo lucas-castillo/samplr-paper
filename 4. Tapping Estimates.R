@@ -49,12 +49,12 @@ all %>%
            label=TeX(label, output = "character"), 
            size=6, color="black", parse=T) +
   # inset --------
+  annotate("rect", xmin=-2.5-e, ymin=0-1+e, xmax=-1.5+e, ymax=-1.5-1-e, fill="white", colour="black") +
   annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- 1    - 1) +
   annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- .5   - 1) +
   annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- 1.5  - 1) +
   annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- .75  - 1) +
   annotate("segment", x=-2.5, y=0 - 1, xend=-1.5, yend=- 1.25 - 1) +
-  annotate("rect", xmin=-2.5-e, ymin=0-1+e, xmax=-1.5+e, ymax=-1.5-1-e, fill=NA, colour="black") +
   annotate("text", x = -2, y = -2.1, label="1/f", size=8) + 
   # inset END --------
   xlab(TeX("Log Frequency")) +
