@@ -87,7 +87,8 @@ posterior <- prediction$vote %>%
   ylab("Posterior") + 
   labs(title="Multiple Chains") +
   theme(legend.position = "none") + 
-    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0)) + 
+    geom_hline(yintercept = .5, linetype = "dashed")
 )
 (
 C <- posterior %>% 
@@ -106,7 +107,8 @@ C <- posterior %>%
   ) +
   scale_fill_distiller(palette = "Oranges") +
   theme(legend.position = "none") + 
-    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0)) + 
+    geom_hline(yintercept = .5, linetype = "dashed")
 )
 
 (D <- posterior %>% 
@@ -127,7 +129,8 @@ C <- posterior %>%
   ) +
   scale_fill_distiller(palette = "Purples") +
   theme(legend.position = "none") + 
-    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0))
+    scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), expand=c(0,0)) + 
+    geom_hline(yintercept = .5, linetype = "dashed")
 )
 
 layout <- '
