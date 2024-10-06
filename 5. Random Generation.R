@@ -115,25 +115,19 @@ empirical %>%
   pivot_longer(R:S) %>% 
   mutate(name = factor(name, levels=c("R", "A", "TP", "D", "S"))) %>% 
   mutate(target_dist = ifelse(target_dist == "U", "Uniform", "Gaussian")) %>% 
-  # filter(name == "R") %>% 
   ggplot() + 
-  # geom_jitter(aes(target_dist, value), width=0.05) +
-  geom_boxplot(aes(target_dist, value), outlier.shape = NA) + 
+  geom_boxplot(aes(target_dist, value)) + 
   facet_wrap(vars(name), scales = "free", labeller=measure_labeller, ncol = 1) +
-  # geom_segment(
-  #   data=sum_simulations,# %>% filter(name == "R"), 
-  #   mapping = aes(x=target_distN-.25, xend=target_distN+.25, y=M), 
-  #   colour = "black"
-  # ) +
-  # geom_rect(
-  #   mapping = aes(xmin = target_distN-.25, xmax = target_distN+.25, ymin = M - 1*S, ymax=M+1*S),
-  #   data=sum_simulations,# %>% filter(name == "R"),
-  #   fill="darkgrey", linewidth=.5, alpha=.5, color="black"
-  # ) +
   geom_rect(
     mapping = aes(xmin = target_distN-.25, xmax = target_distN+.25, ymin = M - .5*S, ymax=M+.5*S),
     data=sum_simulations,# %>% filter(name == "R"),
     fill="grey", linewidth=.5, alpha=.5, color="black"
   ) + 
   coord_flip() + 
-  xlab("")
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text = element_blank(),
+  )
+
+ggsave("plots/random_generation.pdf", width = 6, height = 6, dpi = 300)

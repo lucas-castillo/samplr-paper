@@ -6,6 +6,7 @@ library(ggplot2)
 library(samplr)
 library(samplrData)
 library(abcrf)
+library(patchwork)
 set.seed(2024)
 source("src/rg_functions.R")
 source("src/theme.R")
@@ -47,39 +48,81 @@ posterior <- prediction$vote %>%
   mutate(gradient = model %in% c("REC", "MCHMC", "MCREC")) %>%
   mutate(momentum = ifelse(model %in% c("REC", "MCREC"), T, ifelse(model %in% c("HMC", "MCHMC"), F, NA)))
 
-posterior %>% 
+(A <- posterior %>% 
   group_by(id) %>% 
   mutate(pmcrec = sum(ifelse(model == "MCREC", p, 0))) %>% 
   ggplot(aes(forcats::fct_reorder(id, pmcrec), p, fill=model)) + 
   geom_col(position = "stack") + 
   xlab("Participants") + 
   ylab("Posterior") + 
-  theme(axis.text = element_blank(), axis.ticks = element_blank()) 
+  theme(
+    axis.text.x = element_blank(), 
+    axis.ticks = element_blank()
+  ) +
+  labs(title="Model Allocation") +
+  scale_fill_brewer(name="Model")
+  + guides(fill = guide_legend(nrow = 1))
 
-posterior %>% 
+)
+
+(B <- posterior %>% 
   group_by(id, chains) %>% 
   summarise(p = sum(p)) %>% 
-  mutate(pc = sum(ifelse(chains, p, 0))) %>% 
-  ggplot(aes(forcats::fct_reorder(id, pc), p, fill=chains)) + 
-  geom_col(position = "stack")
-
-posterior %>% 
+  filter(chains) %>% 
+  ggplot(aes(forcats::fct_reorder(id, p), p, fill=1-p)) + 
+  geom_col(position = "stack") + 
+  theme(
+    axis.text.x = element_blank(), 
+    axis.ticks = element_blank()
+  ) +
+  scale_fill_distiller(palette = "Greens") +
+  xlab("Participants") + 
+  ylab("Posterior") + 
+  labs(title="Chains") +
+  theme(legend.position = "none"))
+(
+C <- posterior %>% 
   group_by(id, gradient) %>% 
   summarise(p = sum(p)) %>% 
+  filter(gradient) %>% 
   mutate(pc = sum(ifelse(gradient, p, 0))) %>% 
-  ggplot(aes(forcats::fct_reorder(id, pc), p, fill=gradient)) + 
-  geom_col(position = "stack")
+  ggplot(aes(forcats::fct_reorder(id, pc), p, fill=1-p)) + 
+  geom_col(position = "stack") + 
+  xlab("Participants") + 
+  ylab("Posterior") + 
+  labs(title="Gradient") +
+  theme(
+    axis.text.x = element_blank(), 
+    axis.ticks = element_blank()
+  ) +
+  scale_fill_distiller(palette = "Oranges") +
+  theme(legend.position = "none")
+)
 
-
-posterior %>% 
+(D <- posterior %>% 
   group_by(id, momentum) %>% 
   filter(!is.na(momentum)) %>% 
   summarise(p = sum(p)) %>% 
   mutate(p = p / sum(p)) %>% 
+  filter(momentum) %>% 
   mutate(pc = sum(ifelse(momentum, p, 0))) %>% 
-  ggplot(aes(forcats::fct_reorder(id, pc), p, fill=momentum)) + 
-  geom_col(position = "stack")
+  ggplot(aes(forcats::fct_reorder(id, pc), p, fill=1-p)) + 
+  geom_col(position = "stack") + 
+  xlab("Participants") + 
+  ylab("Posterior") +
+  labs(title="Momentum") +
+  theme(
+    axis.text.x = element_blank(), 
+    axis.ticks = element_blank()
+  ) +
+  scale_fill_distiller(palette = "Purples") +
+  theme(legend.position = "none")
+)
 
+layout <- '
+AAA
+BCD
+'
+A + B + C + D + plot_layout(design = layout)
 
-
-
+ggsave("plots/RG_ABC.pdf", width=11, height=6, dpi=300)

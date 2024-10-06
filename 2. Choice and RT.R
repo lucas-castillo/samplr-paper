@@ -5,7 +5,6 @@ source("src/theme.R")
 set.seed(2024)
 
 ## Information-controlled processing ------
-
 # generate the stimuli
 trial_stim <- factor(sample(c('left', 'right'), 500, TRUE))
 
@@ -31,29 +30,15 @@ for (d in 1:2) {
 df <- data.frame(accuracy=accuracy, mean=meanRT, se=seRT)
 
 # plot the accuracy-RT plot
-fig1 <- ggplot(df, aes(x = accuracy, y = mean)) + 
+df %>% 
+  ggplot(aes(x = accuracy, y = mean)) + 
   geom_bar(stat="identity", width=0.05) +
-  geom_errorbar( aes(ymin=mean-se, ymax=mean+se), width=0,
-                 position=position_dodge(.9)) +
+  geom_errorbar(
+    aes(ymin=mean-se, ymax=mean+se), 
+    width=0.01,
+    position=position_dodge(.9)) +
   coord_cartesian(ylim=c(0.5, 0.9))+
-  scale_x_continuous(breaks = accuracy, labels = accuracy) +
-  labs(x = "Accuracy", y = "Response Time", title = "Speed-accuracy trade-off")
-fig1
+  scale_x_continuous(breaks = accuracy, labels = accuracy * 100) +
+  labs(x = "Accuracy (%)", y = "Response Time (s)", title = "Speed-accuracy trade-off")
 
-# ## Time-controlled processing ------
-# # generate the stimuli
-# trial_stim <- factor(sample(c('left', 'right'), 500, TRUE))
-# 
-# abs_model2 <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
-#                            s_nd_time=0.3, lambda = 100, distr_name = 'norm', distr_params = 1)
-# abs_model2$simulate(stopping_rule = 'relative', delta = 10, dec_bdry = -0.5, 
-#                    discrim = 1, trial_stim = trial_stim)
-# df_sim <- subset(abs_model2$sim_results, (rt > 0.1 & rt < 1.5))
-# 
-# # bin the RT and calculate the accuracy
-# df_sim$rt_bin <- cut(df_sim$rt, breaks = 10)
-# binned_ac <- aggregate(accuracy ~ rt_bin, data = df_sim, FUN = mean)
-# 
-# fig2 <- ggplot(binned_ac, aes(x = rt_bin, y = accuracy)) +
-#   geom_bar(stat = "identity") +
-#   labs(x = "RT Bins", y = "Mean Accuracy", title = "Mean Accuracy by RT Bins")
+ggsave("plots/speed_accuracy_tradeoff.pdf", width = 11, height = 6, dpi = 300)

@@ -37,3 +37,4 @@ fig <- ggplot(df, aes(accuracy, confidence)) +
   geom_jitter(data=df_sim, aes(accuracy, confidence), alpha=.5, width = .1, height = .01) + 
   labs(x = "Choice Outcome", y = "Confidence", title = "The resolution-of-confidence effect")
 fig
+ggsave("plots/resolution_confidence.pdf", width = 11, height = 6, dpi = 300)

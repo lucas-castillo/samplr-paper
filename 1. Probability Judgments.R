@@ -1,3 +1,5 @@
+library(glue)
+library(latex2exp)
 library(dplyr)
 library(magrittr)
 library(tidyr)
@@ -22,7 +24,7 @@ get_v <- function(p, N, beta){
 theoretical <- tibble()
 simulated <- tibble()
 
-for (beta in c(.5, 1, 2)){
+for (beta in (1 / c(5, 2))){
   for (N in c(1, 5, 20)){
     mean_estimates <- Bayesian_Sampler(
       a_and_b = a * b,
@@ -50,11 +52,28 @@ for (beta in c(.5, 1, 2)){
   }
 }
 
-theoretical <- theoretical %>% mutate(across(c(beta, N), factor))
-simulated <- simulated %>% mutate(across(c(beta, N), factor))
+theoretical <- theoretical %>% 
+  mutate(across(c(beta, N), factor)) %>% 
+  nest(.by=beta) %>% 
+  rowwise() %>% 
+  mutate(beta_label = TeX(glue("$\\beta={beta}$"), output = "character")) %>% 
+  unnest(data)
+simulated <- simulated %>% 
+  mutate(across(c(beta, N), factor)) %>% 
+  nest(.by=beta) %>% 
+  rowwise() %>% 
+  mutate(beta_label = TeX(glue("$\\beta={beta}$"), output = "character")) %>% 
+  unnest(data)
+
 
 simulated %>% 
-  ggplot(aes(M, SD, color=N, fill=N)) + 
-  geom_point() + 
+  ggplot(aes(M, SD,color=N, fill=N,shape=N, linetype = N)) + 
+  geom_point(size=1.1, color="black", alpha=.6) + 
   geom_line(data=theoretical) +
-  facet_grid(vars(beta))
+  facet_grid(cols = vars(beta_label), labeller = label_parsed) + 
+  xlab("Mean") +
+  ylab("Standard Deviation") +
+  scale_shape_manual(values=21:23) +
+  scale_linetype_manual(values=c(1,2,5))
+
+ggsave("plots/probability_judgments.pdf", width = 11, height = 6, dpi = 300)
