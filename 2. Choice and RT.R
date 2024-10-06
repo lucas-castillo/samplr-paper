@@ -41,4 +41,4 @@ df %>%
   scale_x_continuous(breaks = accuracy, labels = accuracy * 100) +
   labs(x = "Accuracy (%)", y = "Response Time (s)", title = "Speed-accuracy trade-off")
 
-ggsave("plots/speed_accuracy_tradeoff.pdf", width = 11, height = 6, dpi = 300)
+ggsave("plots/speed_accuracy_tradeoff.pdf", width = w, height = w/2, dpi = 300)

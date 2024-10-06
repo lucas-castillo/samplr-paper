@@ -38,4 +38,4 @@ tibble(
   xlab(TeX("$\\log_{10} (Frequency)$")) +
   ylab(TeX("$\\log_{10} (PSD)$"))
 
-ggsave("plots/tapping.pdf", width = 6, height = 6, dpi = 300)
+ggsave("plots/tapping.pdf", width = w, height = w/2, dpi = 300)

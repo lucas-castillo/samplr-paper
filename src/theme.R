@@ -90,14 +90,14 @@ theme_modern <- function(base_size = 11,
       strip.text = element_text(face = "bold")
     )
 }
-
+w <- 8.268 
 theme_set(
-  theme_modern(15) + 
+  theme_modern(11) + 
     theme(
-      strip.text = element_text(size = 15, face="bold"),
-      axis.title = element_text(size = 15, face="bold"),
-      plot.title = element_text(size = 20, face="bold"),
-      legend.title = element_text(size = 15, face="bold"),
+      strip.text = element_text(size = 13, face="bold"),
+      axis.title = element_text(size = 13, face="bold"),
+      plot.title = element_text(size = 18, face="bold"),
+      legend.title = element_text(size = 13, face="bold"),
       legend.background = element_rect(fill = NA, colour = "black"),
       legend.position = "bottom",
     )

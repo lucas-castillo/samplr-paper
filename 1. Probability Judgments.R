@@ -68,12 +68,14 @@ simulated <- simulated %>%
 
 simulated %>% 
   ggplot(aes(M, SD,color=N, fill=N,shape=N, linetype = N)) + 
-  geom_point(size=1.1, color="black", alpha=.6) + 
+  geom_point(size=1.1, color="black", alpha=.8) + 
   geom_line(data=theoretical) +
   facet_grid(cols = vars(beta_label), labeller = label_parsed) + 
   xlab("Mean") +
   ylab("Standard Deviation") +
   scale_shape_manual(values=21:23) +
-  scale_linetype_manual(values=c(1,2,5))
+  scale_linetype_manual(values=c(1,2,5)) + 
+  scale_fill_brewer(palette="Set1") + 
+  scale_x_continuous(labels = \(x){x})
 
-ggsave("plots/probability_judgments.pdf", width = 11, height = 6, dpi = 300)
+ggsave("plots/probability_judgments.pdf", width = w, height = w/2, dpi = 300)

@@ -42,4 +42,4 @@ fig <- df_conf %>%
   scale_y_continuous(limits = c(0, 1.1)) +
   labs(x = 'Subjective probability', y = 'Proportion')
 fig
-ggsave("plots/overprecision.pdf", width = 6, height = 6, dpi=300)
+ggsave("plots/overprecision.pdf", width = w, height = w/2, dpi=300)

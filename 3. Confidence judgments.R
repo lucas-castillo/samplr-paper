@@ -8,14 +8,6 @@ set.seed(2024)
 
 trial_stim <- factor(sample(c('left', 'right'), 500, TRUE))
 
-# # using the same parameters from https://osf.io/8wp5a
-# abs_model <- Zhu23ABS$new(width=0.01, n_chains=6, nd_time=0,
-#                            s_nd_time=0, lambda = 10, distr_name = 'norm', distr_params = 1)
-# abs_model$simulate(stopping_rule = 'relative', delta = 10, dec_bdry = 0,
-#                     discrim = 1, trial_stim = trial_stim)
-
-
-
 # using the parameters estimated from the data of Murphy et al. (2014)
 abs_model <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
                            s_nd_time=0.3, lambda = 100, distr_name = 'norm', distr_params = 1)
@@ -37,4 +29,4 @@ fig <- ggplot(df, aes(accuracy, confidence)) +
   geom_jitter(data=df_sim, aes(accuracy, confidence), alpha=.5, width = .1, height = .01) + 
   labs(x = "Choice Outcome", y = "Confidence", title = "The resolution-of-confidence effect")
 fig
-ggsave("plots/resolution_confidence.pdf", width = 11, height = 6, dpi = 300)
+ggsave("plots/resolution_confidence.pdf", width = w, height = w/2, dpi = 300)

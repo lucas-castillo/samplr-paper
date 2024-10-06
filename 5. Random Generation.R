@@ -130,4 +130,4 @@ empirical %>%
     axis.text = element_blank(),
   )
 
-ggsave("plots/random_generation.pdf", width = 6, height = 6, dpi = 300)
+ggsave("plots/random_generation.pdf", width = w, height = w/1.44, dpi = 300)
