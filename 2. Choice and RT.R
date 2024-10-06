@@ -45,4 +45,4 @@ df %>%
     # title = "Speed-accuracy trade-off"
   )
 
-ggsave("plots/speed_accuracy_tradeoff.pdf", width = w, height = w/2, dpi = 300)
+ggsave("plots/speed_accuracy_tradeoff.png", width = w, height = w/2, dpi = 300)

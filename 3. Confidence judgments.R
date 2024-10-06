@@ -33,4 +33,4 @@ fig <- ggplot(df, aes(accuracy, confidence)) +
     # title = "The resolution-of-confidence effect"
   )
 fig
-ggsave("plots/resolution_confidence.pdf", width = w, height = w/2, dpi = 300)
+ggsave("plots/resolution_confidence.png", width = w, height = w/2, dpi = 300)

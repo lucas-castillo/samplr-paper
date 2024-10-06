@@ -78,4 +78,4 @@ simulated %>%
   scale_fill_brewer(palette="Set1") + 
   scale_x_continuous(labels = \(x){x})
 
-ggsave("plots/probability_judgments.pdf", width = w, height = w/2, dpi = 300)
+ggsave("plots/probability_judgments.png", width = w, height = w/2, dpi = 300)

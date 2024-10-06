@@ -135,4 +135,4 @@ BCD
 '
 A + B + C + D + plot_layout(design = layout)
 
-ggsave("plots/RG_ABC.pdf", width=w, height=w/1.44, dpi=300)
+ggsave("plots/RG_ABC.png", width=w, height=w/1.44, dpi=300)
