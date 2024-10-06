@@ -9,80 +9,17 @@ set.seed(2024)
 source("src/rg_functions.R")
 source("src/theme.R")
 
-get_simulated_random_measures <- function(start, dist, params){
-  # prior
-  epsilon <- .1
-  L <- 30
-  delta_T <- 2
-  nChains <- 6
-  swap_all <- T
-  alpha <- .2
-  
-  v <- sampler_mcrec(
-    start = start,
-    distr_name = dist,
-    distr_params = params,
-    epsilon = epsilon, 
-    L = L, 
-    alpha = alpha, 
-    nChains = nChains, 
-    delta_T = delta_T, 
-    swap_all = swap_all, 
-    iterations = 100
-  )$Samples[,,1]
-  return(get_measures(v))
-}
-
 empirical <- samplrData::castillo2024.rgmomentum.e1 %>% 
   mutate(value = ifelse(value < 100, NA, value)) %>% 
   mutate(value = ifelse(value > 210, NA, value))
-  
-measures <- empirical %>% 
-  group_by(target_dist, target_gender) %>% 
-  filter(!is.na(value)) %>% 
-  summarise(
-    M = mean(value),
-    S = sd(value),
-    lb = min(value),
-    ub = max(value)
-  )
-
-mm <- measures$M [measures$target_gender == "M" & measures$target_dist == "N"]
-ms <- measures$S [measures$target_gender == "M" & measures$target_dist == "N"]
-ml <- measures$lb[measures$target_gender == "M" & measures$target_dist == "U"]
-mu <- measures$ub[measures$target_gender == "M" & measures$target_dist == "U"]
-fm <- measures$M [measures$target_gender == "F" & measures$target_dist == "N"]
-fs <- measures$S [measures$target_gender == "F" & measures$target_dist == "N"]
-fl <- measures$lb[measures$target_gender == "F" & measures$target_dist == "U"]
-fu <- measures$ub[measures$target_gender == "F" & measures$target_dist == "U"]
-
-
 
 simulations <- tibble()
 for (i in 1:100){
   simulations <- rbind(
     simulations,
-    get_simulated_random_measures(
-      rnorm(1, mm, ms),
-      "norm",
-      c(mm, ms)
-    ) %>% mutate(target="N", target_gender = "M"),
-    get_simulated_random_measures(
-      rnorm(1, fm, fs),
-      "norm",
-      c(fm,fs)
-    ) %>% mutate(target="N", target_gender = "F"),
-    get_simulated_random_measures(
-      runif(1, ml, mu),
-      "unif",
-      c(ml, mu)
-    ) %>% mutate(target="U", target_gender = "M"),
-    get_simulated_random_measures(
-      runif(1, fl, fu),
-      "unif",
-      c(fl,fu)
-    ) %>% mutate(target="U", target_gender = "F")
-   )
+    get_measures(simulate("MCREC", prior(), "norm")) %>% mutate(target="N"),
+    get_measures(simulate("MCREC", prior(), "unif")) %>% mutate(target="U")
+    )
 }
 sum_simulations <- simulations %>% 
   pivot_longer(R:S) %>% 

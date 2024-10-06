@@ -34,20 +34,29 @@ prior <- function(N=1){
   )
 }
 
-simulate <- function(model, params){
+simulate <- function(model, params, target="norm"){
+  if (target == "norm"){
+    start <- rnorm(1, 176.4, 12)
+    distr_params <- c(176.4,12)
+  } else {
+    target <- "unif"
+    start <- runif(1, 122, 219)
+    distr_params <- c(122, 219)
+  }
+  
   if (model == "MH"){
     v <- samplr::sampler_mh(
-      start=rnorm(1, 176.4, 12),
-      distr_name = "norm", 
-      distr_params = c(176.4,12), 
+      start=start,
+      distr_name = target, 
+      distr_params = distr_params,
       sigma_prop = params[["proposal_width"]], 
       iterations = 200, 
     )$Samples[,1]
   } else if (model == "MC3"){
     v <- samplr::sampler_mc3(
-      start=rnorm(1, 176.4, 12),
-      distr_name = "norm", 
-      distr_params = c(176.4,12), 
+      start=start,
+      distr_name = target, 
+      distr_params = distr_params,
       sigma_prop = params[["proposal_width"]], 
       nChains = params[["n_chains"]], 
       delta_T = params[["delta_t"]], 
@@ -56,18 +65,18 @@ simulate <- function(model, params){
     )$Samples[,,1]
   } else if (model == "HMC"){
     v <- samplr::sampler_hmc(
-      start=rnorm(1, 176.4, 12),
-      distr_name = "norm", 
-      distr_params = c(176.4,12), 
+      start=start,
+      distr_name = target, 
+      distr_params = distr_params,
       epsilon = .1,
       L = params[["L"]], 
       iterations = 200, 
     )$Samples[,1]
   } else if (model == "REC"){
     v <- samplr::sampler_rec(
-      start=rnorm(1, 176.4, 12),
-      distr_name = "norm", 
-      distr_params = c(176.4,12), 
+      start=start,
+      distr_name = target, 
+      distr_params = distr_params,
       epsilon = .1,
       L = params[["L"]], 
       alpha = params[["alpha"]],
@@ -75,9 +84,9 @@ simulate <- function(model, params){
     )$Samples[,1]
   } else if (model == "MCHMC"){
     v <- samplr::sampler_mchmc(
-      start=rnorm(1, 176.4, 12),
-      distr_name = "norm", 
-      distr_params = c(176.4,12), 
+      start=start,
+      distr_name = target, 
+      distr_params = distr_params,
       epsilon = .1,
       L = params[["L"]], 
       nChains = params[["n_chains"]], 
@@ -87,9 +96,9 @@ simulate <- function(model, params){
     )$Samples[,,1]
   } else if (model == "MCREC"){
     v <- samplr::sampler_mcrec(
-      start=rnorm(1, 176.4, 12),
-      distr_name = "norm", 
-      distr_params = c(176.4,12), 
+      start=start,
+      distr_name = target, 
+      distr_params = distr_params,
       epsilon = .1,
       L = params[["L"]], 
       nChains = params[["n_chains"]], 
@@ -99,5 +108,6 @@ simulate <- function(model, params){
       iterations = 200, 
     )$Samples[,,1]
   }
+  
   return(v)
 }
