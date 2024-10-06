@@ -39,6 +39,10 @@ df %>%
     position=position_dodge(.9)) +
   coord_cartesian(ylim=c(0.5, 0.9))+
   scale_x_continuous(breaks = accuracy, labels = accuracy * 100) +
-  labs(x = "Accuracy (%)", y = "Response Time (s)", title = "Speed-accuracy trade-off")
+  labs(
+    x = "Accuracy (%)", 
+    y = "Response Time (s)", 
+    # title = "Speed-accuracy trade-off"
+  )
 
 ggsave("plots/speed_accuracy_tradeoff.pdf", width = w, height = w/2, dpi = 300)
