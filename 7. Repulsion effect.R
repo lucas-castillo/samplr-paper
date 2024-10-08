@@ -34,10 +34,11 @@ samples2 <- abs_model$sim_results %>%
 samples_df2 <- data.frame(samples = samples2)
 
 fig_repul <- ggplot()+
-  geom_histogram(data=samples_df1, mapping=aes(x = samples, y=..density..), bins=50, fill='#64CCC5',  alpha = 0.7)+
+  geom_histogram(data=samples_df1, mapping=aes(x = samples, y=after_stat(density)), bins=50, fill='#64CCC5',  alpha = 0.7)+
   geom_vline(aes(xintercept=27), color='#176B87', linewidth=1)+
-  geom_histogram(data=samples_df2, mapping=aes(x = samples, y=..density..), bins=50, fill='#AD2959',  alpha = 0.7)+
+  geom_histogram(data=samples_df2, mapping=aes(x = samples, y=after_stat(density)), bins=50, fill='#AD2959',  alpha = 0.7)+
   geom_vline(aes(xintercept=35), color='#62013C', linewidth=1)+
-  stat_function(fun = dnorm, args = list(mean = 25, sd = 1), color = "#393E46", linewidth = 1, alpha = 0.5)
+  stat_function(fun = dnorm, args = list(mean = 25, sd = 1), color = "#393E46", linewidth = 1, alpha = 0.5)+
+  labs(x = 'Estimates', y='Density')
   
 fig_repul
