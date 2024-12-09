@@ -680,6 +680,25 @@
       "Repository": "CRAN",
       "Hash": "27550641889a3abf3aec4d91186311ec"
     },
+    "patchwork": {
+      "Package": "patchwork",
+      "Version": "1.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "cli",
+        "farver",
+        "ggplot2",
+        "grDevices",
+        "graphics",
+        "grid",
+        "gtable",
+        "rlang",
+        "stats",
+        "utils"
+      ],
+      "Hash": "e23fb9ecb1258207bcb763d78d513439"
+    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.9.0",
@@ -920,8 +939,13 @@
     "samplr": {
       "Package": "samplr",
       "Version": "1.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "lucas-castillo",
+      "RemoteRepo": "samplr",
+      "RemoteRef": "main",
+      "RemoteSha": "7717a039e73c0bb962a10c4219104117d6e1e893",
       "Requirements": [
         "R",
         "R6",
@@ -937,7 +961,7 @@
         "stats",
         "testthat"
       ],
-      "Hash": "b289d3079c0f2c33ff8f89fac0170b62"
+      "Hash": "6f2cf0302a97197e46980161e7a48b7e"
     },
     "samplrData": {
       "Package": "samplrData",
