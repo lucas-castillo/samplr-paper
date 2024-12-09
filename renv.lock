@@ -938,14 +938,14 @@
     },
     "samplr": {
       "Package": "samplr",
-      "Version": "1.0.1",
+      "Version": "1.0.1.9000",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "lucas-castillo",
       "RemoteRepo": "samplr",
-      "RemoteRef": "main",
-      "RemoteSha": "7717a039e73c0bb962a10c4219104117d6e1e893",
+      "RemoteRef": "626d5df67a2ef44663a34b85b64d3ee738069ed1",
+      "RemoteSha": "626d5df67a2ef44663a34b85b64d3ee738069ed1",
       "Requirements": [
         "R",
         "R6",
@@ -961,7 +961,7 @@
         "stats",
         "testthat"
       ],
-      "Hash": "6f2cf0302a97197e46980161e7a48b7e"
+      "Hash": "cff5877ce0a74f9353e13f9c602bb02e"
     },
     "samplrData": {
       "Package": "samplrData",
