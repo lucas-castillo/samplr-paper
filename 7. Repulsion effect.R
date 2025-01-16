@@ -9,7 +9,7 @@ set.seed(2024)
 
 mu <- seq(-0.5, 0.5, 0.25)
 N <- 1000 * length(mu)
-trial_stim <- factor(rep('l', N)) # we have only "one" level of stimulus
+trial_stim <- factor(rep('l', N)) # we have only "one" level of stimulus because we don't want "mirror" the posterior of the hypotheses
 
 # # The mixed gaussian distribution
 # custom_dens <- function(x) {
@@ -54,7 +54,7 @@ repulsion_df <- data.frame(samples = as.vector(samples_repul))
 hstar2 <- hstar1 + 2
 start_point2 <- rep(hstar2, N) + rnorm(N, 0, 0.01)
 abs_model$reset_sim_results()
-abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = 2, 
+abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = 0, 
                    discrim = 0, trial_stim = trial_stim, start_point=start_point2, prior_depend=FALSE)
 
 samples_anchor <- abs_model$sim_results %>%
