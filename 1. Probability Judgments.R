@@ -140,6 +140,7 @@ p4 <- simulated %>%
   scale_color_manual(name="BS Parameters", values = theoretical_colors, labels=theoretical_names) +
   scale_fill_manual(name="BS Parameters", values = theoretical_colors, labels=theoretical_names, guide="none")
 
-(p1 + p2) / (p3 + p4) + plot_layout(guides="collect")
+(p1 + p2) / (p3 + p4) + plot_layout(guides="collect")  &
+  theme(legend.position='right')
+ggsave("plots/probability_judgments.png", width = w, height = w/1.267, dpi = 300)
 
-ggsave("plots/probability_judgments.png", width = w, height = w/2, dpi = 300)
