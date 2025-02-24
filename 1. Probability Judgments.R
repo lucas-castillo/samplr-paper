@@ -94,32 +94,37 @@ simulated <- simulated %>%
 
 
 ## figure -- 
+ptn_colors <-  RColorBrewer::brewer.pal(4, name = "Set1")
+ptn_names <- unname(latex2exp::TeX(as.character(unique(ptn$label))))
+
+theoretical_colors <-  RColorBrewer::brewer.pal(4, name = "Set1")
+theoretical_names <- unname(latex2exp::TeX(as.character(unique(theoretical$label))))
 
 p1 <- ptn %>% 
   ggplot(aes(true, exp, color=label)) + 
-  geom_line() + 
+  geom_line(show_guide ="none") + 
   xlab("P(A)") + 
   ylab("Model Prediction") + 
-  theme(legend.position = c(.2, .8))
+  theme(legend.position = "none")
 
 p2 <- theoretical %>% 
   ggplot(aes(true, M, color=label)) +
-  geom_line() + 
+  geom_line(show_guide ="none") + 
   xlab("P(A)") + 
   ylab("Model Prediction") + 
-  theme(legend.position = c(.2, .8))
+  theme(legend.position = "none")
 
 p3 <- ptn %>% 
   ggplot(aes(exp, var, color=label, linetype=label, group=label)) +
   geom_line() +
   xlab("Mean") +
   ylab("Variance") +
-  scale_shape_manual(values=21:24) +
-  scale_linetype_manual(values=c(1,2,5, 6)) + 
-  scale_fill_brewer(palette="Set1") + 
-  scale_color_brewer(palette="Set1") + 
+  scale_shape_manual(values=21:24, guide="none") +
+  scale_linetype_manual(values=c(1,2,5, 6), guide="none") +
   scale_x_continuous(labels = \(x){x}) + 
-  theme(legend.position = c(.2, .8))
+  theme(legend.position = c(.2, .8)) +
+  scale_color_manual(name="PT+N Parameters", values = ptn_colors, labels=ptn_names) + 
+  scale_fill_manual(name="PT+N Parameters", values = ptn_colors, labels=ptn_names)
 
 
 p4 <- simulated %>% 
@@ -128,12 +133,12 @@ p4 <- simulated %>%
   geom_line(data=theoretical) +
   xlab("Mean") +
   ylab("Variance") +
-  scale_shape_manual(values=21:24) +
-  scale_linetype_manual(values=c(1,2,5, 6)) + 
-  scale_fill_brewer(palette="Set1") + 
-  scale_color_brewer(palette="Set1") + 
+  scale_shape_manual(values=21:24, guide="none") +
+  scale_linetype_manual(values=c(1,2,5,6), guide="none") +
   scale_x_continuous(labels = \(x){x}) + 
-  theme(legend.position = c(.2, .8))
+  theme(legend.position = c(.2, .8)) +
+  scale_color_manual(name="BS Parameters", values = theoretical_colors, labels=theoretical_names) +
+  scale_fill_manual(name="BS Parameters", values = theoretical_colors, labels=theoretical_names, guide="none")
 
 (p1 + p2) / (p3 + p4) + plot_layout(guides="collect")
 
