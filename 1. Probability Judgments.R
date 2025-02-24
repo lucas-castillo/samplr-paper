@@ -142,5 +142,5 @@ p4 <- simulated %>%
 
 (p1 + p2) / (p3 + p4) + plot_layout(guides="collect")  &
   theme(legend.position='right')
-ggsave("plots/probability_judgments.png", width = w, height = w/1.267, dpi = 300)
+ggsave("plots/probability_judgments.png", width = w, height = w/1.469751, dpi = 300)
 
