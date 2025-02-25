@@ -7,11 +7,15 @@ library(samplr)
 library(samplrData)
 library(abcrf)
 library(patchwork)
+
 set.seed(2024)
 source("src/rg_functions.R")
+source("src/rforest_posterior.R")
 source("src/theme.R")
+registerDoParallel(parallel::detectCores() - 1)
 models <- c("MH", "MC3", "HMC", "REC", "MCHMC", "MCREC")
 
+# Simulate sequences (or read from cache) ---------------------------------
 if ("simulations.RData" %in% list.files("cache")){
   load("cache/simulations.RData")
 } else {
@@ -42,17 +46,32 @@ observed <- samplrData::castillo2024.rgmomentum.e1 %>%
 model <- abcrf(model ~ R + A + TP + D + S, data=simulations)
 prediction <- predict(model, obs = observed, training = simulations)
 
-posterior <- prediction$vote %>% 
+# get posterior -----------------------------------------------------------
+# get training record (or load from cache)
+if ("training_record.RData" %in% list.files("cache")){
+  load("cache/training_record.RData")
+} else {
+  training_record <- get_forest_memory(model, simulations)
+  save(training_record, file = "cache/training_record.RData")  
+}
+
+# use training record to compute posterior (or load from cache!)
+if ("posterior.RData" %in% list.files("cache")){
+  load("cache/posterior.RData")
+} else {
+  posterior <- get_posterior(observed, training_record, model)
+  save(posterior, file = "cache/posterior.RData")  
+}
+posterior <- posterior %>% 
+  magrittr::set_colnames(models) %>% 
   as_tibble() %>% 
-  magrittr::set_colnames(colnames(prediction$vote)) %>% 
   mutate(id = factor(observed$id)) %>% 
-  pivot_longer(c(everything(), -id), names_to = "model", values_to = "count") %>%
-  group_by(id)  %>% 
-  mutate(p = count / sum(count)) %>% 
+  pivot_longer(c(everything(), -id), names_to = "model", values_to = "p") %>% 
   mutate(model = factor(model, levels = models)) %>% 
   mutate(chains = model %in% c("MC3", "MCHMC", "MCREC")) %>%
   mutate(gradient = model %in% c("REC", "MCHMC", "MCREC")) %>%
   mutate(momentum = ifelse(model %in% c("REC", "MCREC"), T, ifelse(model %in% c("HMC", "MCHMC"), F, NA)))
+
 
 (A <- posterior %>% 
   group_by(id) %>% 
@@ -140,3 +159,4 @@ BCD
 A + B + C + D + plot_layout(design = layout)
 
 ggsave("plots/RG_ABC.png", width=w, height=w/1.44, dpi=300)
+
