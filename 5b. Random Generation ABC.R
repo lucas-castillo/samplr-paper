@@ -42,7 +42,7 @@ observed <- samplrData::castillo2024.rgmomentum.e1 %>%
   summarise(across(c(R, A, TP_full, D, S), \(x){mean(x, na.rm=T)})) %>% 
   rename(TP = "TP_full") %>% 
   ungroup
-
+set.seed(2024)
 model <- abcrf(model ~ R + A + TP + D + S, data=simulations)
 prediction <- predict(model, obs = observed, training = simulations)
 
