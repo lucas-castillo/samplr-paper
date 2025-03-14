@@ -41,7 +41,7 @@ abs_model <- Zhu23ABS$new(width=0.05, n_chains=8, nd_time=0.4,
 # Repulsion effect
 hstar1 <- 0
 start_point1 <- rep(hstar1, N) + rnorm(N, 0, 0.01) # add a noise 
-abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = 0, 
+abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = hstar1, 
                    discrim = 0, trial_stim = trial_stim, start_point=start_point1, prior_depend=FALSE)
 samples_repul <- abs_model$sim_results %>%
   pull(samples) %>%
@@ -54,7 +54,7 @@ repulsion_df <- data.frame(samples = as.vector(samples_repul))
 hstar2 <- hstar1 + 2
 start_point2 <- rep(hstar2, N) + rnorm(N, 0, 0.01)
 abs_model$reset_sim_results()
-abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = 0, 
+abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = hstar2, 
                    discrim = 0, trial_stim = trial_stim, start_point=start_point2, prior_depend=FALSE)
 
 samples_anchor <- abs_model$sim_results %>%
@@ -73,6 +73,6 @@ fig_repul <- ggplot()+
                   n=200, color = "#393E46", linewidth = 0.4, alpha = 0.7)
   })+
   labs(x = 'Estimates', y='Density')
-
+fig_repul
 
 ggsave("plots/repulsion_effect.png", plot = fig_repul, width = w, height = w/2, dpi = 300)
