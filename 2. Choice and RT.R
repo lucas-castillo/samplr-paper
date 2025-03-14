@@ -42,16 +42,16 @@ summary_df <- df %>%
   group_by(speed) %>%
   summarise(meanRT = mean(RT),
             meanAcc = mean(accuracy),
-            sdRT = sd(RT),
-            sdAcc = sd(accuracy))
+            sdRT = sd(RT)/sqrt(n()),
+            sdAcc = sd(accuracy)/sqrt(n()))
 
 # plot the accuracy-RT plot
 ggplot(summary_df, mapping = aes(x = meanAcc, y = meanRT)) + 
   geom_point(data = df, mapping = aes(x = accuracy, y = RT, color = speed), size = 0.7, alpha = 0.5) +
-  # geom_point(size = 2, color = 'black') +
-  # geom_errorbar(aes(ymin = meanRT-1.96*sdRT, ymax = meanRT + 1.96*sdRT), width=0) +
-  # geom_errorbarh(aes(xmin = meanAcc-1.96*sdAcc, xmax = meanAcc + 1.96*sdAcc), height=0) +
-  #coord_cartesian(ylim=c(0.5, 1))+
+  geom_point(size = 2, color = 'black') +
+  geom_errorbar(aes(ymin = meanRT-1.96*sdRT, ymax = meanRT + 1.96*sdRT), width=0) +
+  geom_errorbarh(aes(xmin = meanAcc-1.96*sdAcc, xmax = meanAcc + 1.96*sdAcc), height=0) +
+  coord_cartesian(ylim=c(0.5, 0.9))+
   labs(
     x = "Accuracy (%)", 
     y = "Response Time (s)", 
