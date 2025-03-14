@@ -102,14 +102,14 @@ theoretical_names <- unname(latex2exp::TeX(as.character(unique(theoretical$label
 
 p1 <- ptn %>% 
   ggplot(aes(true, exp, color=label)) + 
-  geom_line(show_guide ="none") + 
+  geom_line(show.legend =F) + 
   xlab("P(A)") + 
   ylab("Model Prediction") + 
   theme(legend.position = "none")
 
 p2 <- theoretical %>% 
   ggplot(aes(true, M, color=label)) +
-  geom_line(show_guide ="none") + 
+  geom_line(show.legend =F) + 
   xlab("P(A)") + 
   ylab("Model Prediction") + 
   theme(legend.position = "none")
@@ -122,10 +122,9 @@ p3 <- ptn %>%
   scale_shape_manual(values=21:24, guide="none") +
   scale_linetype_manual(values=c(1,2,5, 6), guide="none") +
   scale_x_continuous(labels = \(x){x}) + 
-  theme(legend.position = c(.2, .8)) +
+  theme(legend.position.inside = c(.2, .8)) +
   scale_color_manual(name="PT+N Parameters", values = ptn_colors, labels=ptn_names) + 
   scale_fill_manual(name="PT+N Parameters", values = ptn_colors, labels=ptn_names)
-
 
 p4 <- simulated %>% 
   ggplot(aes(M, V, color= label, fill=label,shape=label, linetype = label, group=label)) + 
@@ -136,7 +135,7 @@ p4 <- simulated %>%
   scale_shape_manual(values=21:24, guide="none") +
   scale_linetype_manual(values=c(1,2,5,6), guide="none") +
   scale_x_continuous(labels = \(x){x}) + 
-  theme(legend.position = c(.2, .8)) +
+  theme(legend.position.inside = c(.2, .8)) +
   scale_color_manual(name="BS Parameters", values = theoretical_colors, labels=theoretical_names) +
   scale_fill_manual(name="BS Parameters", values = theoretical_colors, labels=theoretical_names, guide="none")
 
