@@ -10,13 +10,12 @@ set.seed(2024)
 trial_stim <- factor(sample(c('left', 'right'), 200, TRUE))
 
 # Initialise the model
-# using the parameters estimated from the data of Murphy et al. (2014) (except `delta`)
-abs_model <- Zhu23ABS$new(width=2, n_chains=8, nd_time=0.4,
+abs_model <- Zhu23ABS$new(width=0.01, n_chains=8, nd_time=0.4,
                           s_nd_time=0.3, lambda = 100, distr_name = 'norm', distr_params = 1)
 
 abs_simulation <- function(delta, i){
   abs_model$reset_sim_results()
-  abs_model$simulate(stopping_rule = 'relative', delta = delta, dec_bdry = -0.5, 
+  abs_model$simulate(stopping_rule = 'relative', delta = delta, dec_bdry = 0, 
                      discrim = 1, trial_stim = trial_stim)
   accuracy <- mean(abs_model$sim_results$accuracy) * 100
   meanRT <- mean(abs_model$sim_results$rt)
