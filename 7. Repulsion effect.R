@@ -9,7 +9,7 @@ set.seed(2024)
 
 mu <- seq(-0.5, 0.5, 0.25)
 N <- 1000 * length(mu)
-trial_stim <- factor(rep('l', N)) # we have only "one" level of stimulus because we don't want "mirror" the posterior of the hypotheses
+trial_stim <- factor(rep('l', N)) # this is just a placeholder
 
 # # The mixed gaussian distribution
 # custom_dens <- function(x) {
