@@ -11,16 +11,6 @@ mu <- seq(-0.5, 0.5, 0.25)
 N <- 1000 * length(mu)
 trial_stim <- factor(rep('l', N)) # this is just a placeholder
 
-# # The mixed gaussian distribution
-# custom_dens <- function(x) {
-#   mu <- seq(-0.5, 0.5, 0.25)
-#   n <- length(mu)
-#   pdf <- sapply(mu, function(mu){dnorm(x, mu, sd=0.5)})
-#   density <- sum(rep(1/n, n) * pdf)
-#   return(density)
-# }
-# custom_dens_list <- lapply(1:N, function(i) custom_dens)
-
 
 custom_dens <- function(x, mu) {
   pdf <- dnorm(x, mu, sd=0.25)
@@ -43,10 +33,7 @@ hstar1 <- 0
 start_point1 <- rep(hstar1, N) + rnorm(N, 0, 0.01) # add a noise 
 abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = hstar1, 
                    discrim = 0, trial_stim = trial_stim, start_point=start_point1, prior_depend=FALSE)
-samples_repul <- abs_model$sim_results %>%
-  pull(samples) %>%
-  lapply(function(x) x[length(x)]) %>%  # Take the last sample as the estimate
-  unlist()
+samples_repul <- unlist(abs_model$sim_results$point_est)
 repulsion_df <- data.frame(samples = as.vector(samples_repul))
 
 
@@ -57,10 +44,7 @@ abs_model$reset_sim_results()
 abs_model$simulate(stopping_rule = 'relative', delta = 4, dec_bdry = hstar2, 
                    discrim = 0, trial_stim = trial_stim, start_point=start_point2, prior_depend=FALSE)
 
-samples_anchor <- abs_model$sim_results %>%
-  pull(samples) %>%
-  lapply(function(x) x[length(x)]) %>%  # Take the last sample as the estimate
-  unlist()
+samples_anchor <- unlist(abs_model$sim_results$point_est)
 anchor_df <- data.frame(samples = as.vector(samples_anchor))
 
 fig_repul <- ggplot()+
