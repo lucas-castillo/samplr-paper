@@ -46,7 +46,7 @@ summary_df <- df %>%
 
 # plot the accuracy-RT plot
 ggplot(summary_df, mapping = aes(x = meanAcc, y = meanRT)) + 
-  geom_point(data = df, mapping = aes(x = accuracy, y = RT, color = instr), size = 0.7, alpha = 0.5) +
+  geom_point(data = df, mapping = aes(x = accuracy, y = RT, color = instr), size = 0.9, alpha = 0.75) +
   geom_point(size = 1.5, color = 'black') +
   geom_errorbar(aes(ymin = meanRT-1.96*sdRT, ymax = meanRT + 1.96*sdRT), width=0) +
   geom_errorbarh(aes(xmin = meanAcc-1.96*sdAcc, xmax = meanAcc + 1.96*sdAcc), height=0) +
@@ -56,6 +56,7 @@ ggplot(summary_df, mapping = aes(x = meanAcc, y = meanRT)) +
     x = "Accuracy (%)", 
     y = "Response Time (s)", 
     # title = "Speed-accuracy trade-off"
-  )
+  ) + 
+  guides(color = guide_legend(override.aes = list(size=3)))
 
 ggsave("plots/speed_accuracy_tradeoff.png", width = w, height = w/1.5, dpi = 300)
