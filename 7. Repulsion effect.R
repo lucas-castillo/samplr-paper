@@ -7,21 +7,18 @@ source("src/theme.R")
 set.seed(2024)
 
 
-mu <- seq(-0.5, 0.5, 0.25)
-N <- 1000 * length(mu)
+mu_comp <- seq(-0.5, 0.5, 0.25)
+N <- 1000 * length(mu_comp)
 trial_stim <- factor(rep('l', N)) # this is just a placeholder
 
 
-custom_dens <- function(x, mu) {
-  pdf <- dnorm(x, mu, sd=0.25)
-  return(pdf)
-}
+M <- lapply(
+  mu_comp, 
+  \(mu){return(\(x){dnorm(x, mu)})}
+)
 
-mu_val <- rep(mu, each = 1000)
-
-custom_dens_list <- lapply(mu_val, function(mu_val) {
-  function(x) custom_dens(x, mu_val)
-})
+# density function per trial
+custom_dens_list <- rep(M, each=1000)
 
 
 abs_model <- Zhu23ABS$new(width=0.05, n_chains=8, nd_time=0.4,
@@ -52,7 +49,7 @@ fig_repul <- ggplot()+
   geom_vline(aes(xintercept=0), color='#64CCC5', linewidth=0.7, alpha = 1)+
   geom_histogram(data=anchor_df, mapping=aes(x = samples, y=after_stat(density)), bins=200, fill='#AD2959',  alpha = 0.7)+
   geom_vline(aes(xintercept=2), color='#AD2959', linewidth=0.7, alpha = 1)+
-  lapply(mu, function(mu) {
+  lapply(mu_comp, function(mu) {
     stat_function(fun = function(x) 1/4 * dnorm(x, mean = mu, sd = 0.25),
                   n=200, color = "#393E46", linewidth = 0.4, alpha = 0.7)
   })+
