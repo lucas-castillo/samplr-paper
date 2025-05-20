@@ -13,11 +13,15 @@ which will install the needed packages. These packages will be installed in the 
 
 ## Citation
 To cite this work, cite
+**APA**: Castillo, L., Li, Y.-X., & Sanborn, A. N. (2025). The samplr package: A tool for modeling human cognition with sampling algorithms. *PsyArXiv*. https://doi.org/10.31234/osf.io/ax8hm_v1
+
+**BibLaTeX**:
 ```
-@misc{castilloSamplrPackageTool,
+@online{castillo2025SamplrPackageTool,
   title = {The Samplr Package: {{A}} Tool for Modeling Human Cognition with Sampling Algorithms},
   author = {Castillo, Lucas and Li, Yun-Xiao and Sanborn, Adam N},
-  copyright = {All rights reserved}
+  date = {2025},
+  doi = {10.31234/osf.io/ax8hm_v1},
+  pubstate = {in preparation}
 }
-
 ```
