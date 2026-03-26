@@ -937,9 +937,14 @@
     },
     "samplr": {
       "Package": "samplr",
-      "Version": "1.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "1.1.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "lucas-castillo",
+      "RemoteRepo": "samplr",
+      "RemoteRef": "main",
+      "RemoteSha": "7a32366e99a2032ccf40129d13adf0e663eb5a48",
       "Requirements": [
         "R",
         "R6",
@@ -949,13 +954,12 @@
         "Rdpack",
         "ggplot2",
         "graphics",
-        "latex2exp",
         "lme4",
         "pracma",
         "stats",
         "testthat"
       ],
-      "Hash": "352257e279a83a06468671fdecc6d7d1"
+      "Hash": "3077318a7268373733fba61956b0b137"
     },
     "samplrData": {
       "Package": "samplrData",
