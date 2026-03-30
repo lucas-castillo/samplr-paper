@@ -45,7 +45,7 @@ all %>%
     linewidth=1.4,
     color=RColorBrewer::brewer.pal(3, name = "Blues")[3]
   ) + 
-  annotate("text", x = -1, y = 2.5, 
+  annotate("text", x = -1.5, y = 2.5, 
            label=TeX(label, output = "character"), 
            size=6, color="black", parse=T) +
   # inset --------
