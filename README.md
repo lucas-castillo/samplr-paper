@@ -2,7 +2,7 @@
 This repository contains code to produce figures in Castillo et al. (2025). 
 
 ## Installation
-This R repository uses the `renv` package to ensure a reproducible environment. It was run using R version 4.3.3. You can see a list of all packages used in the `renv.lock` file. 
+This R repository uses the `renv` package to ensure a reproducible environment. It was run using R version 4.5.3. You can see a list of all packages used in the `renv.lock` file. 
 
 To start, open the `samplr-paper.Rproj` file in RStudio, which will automatically run `.Rprofile`, thus installing the `renv` package if needed. 
 Then, run 
