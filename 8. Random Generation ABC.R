@@ -44,6 +44,7 @@ observed <- samplrData::castillo2024.rgmomentum.e1 %>%
   ungroup
 set.seed(2024)
 model <- abcrf(model ~ R + A + TP + D + S, data=simulations)
+model$model.rf$prediction.error # OOB error
 prediction <- predict(model, obs = observed, training = simulations)
 
 # get posterior -----------------------------------------------------------
