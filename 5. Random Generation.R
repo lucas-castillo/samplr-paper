@@ -31,16 +31,13 @@ sum_simulations <- simulations %>%
   mutate(target_distN = as.numeric(target_dist))
 
 
-measure_names <- list(
+measure_names <- c(
   "R"="Repetitions",
   "A"="Adjacencies",
   "TP"="Turning Points",
   "D"="Distances",
   "S"="Shape"
 )
-measure_labeller <- function(variable,value){
-  return(measure_names[value])
-}
 
 
 empirical %>% 
@@ -52,12 +49,19 @@ empirical %>%
   pivot_longer(R:S) %>% 
   mutate(name = factor(name, levels=c("R", "A", "TP", "D", "S"))) %>% 
   mutate(target_dist = ifelse(target_dist == "U", "Uniform", "Gaussian")) %>% 
+  ungroup %>% 
+  nest_by(name) %>% 
+  mutate(name = factor(measure_names[name], levels=measure_names)) %>% 
+  ungroup %>% 
+  unnest(data) %>% 
   ggplot() + 
   geom_boxplot(aes(target_dist, value)) + 
-  facet_wrap(vars(name), scales = "free", labeller=measure_labeller, ncol = 1) +
+  facet_wrap(vars(name), scales = "free", ncol = 1) +
   geom_rect(
     mapping = aes(xmin = target_distN-.25, xmax = target_distN+.25, ymin = M - .5*S, ymax=M+.5*S),
-    data=sum_simulations,# %>% filter(name == "R"),
+    data = sum_simulations %>% 
+      rowwise() %>% 
+      mutate(name = factor(measure_names[name], levels=measure_names)),# %>% filter(name == "R"),
     fill="grey", linewidth=.5, alpha=.5, color="black"
   ) + 
   coord_flip() + 
