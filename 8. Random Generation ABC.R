@@ -140,6 +140,38 @@ rejection_posterior %>%
   arrange(desc(value)) %>% 
   mutate(BF = exp(value - nth(value, 2)))
 
+# BF of inclusion
+# Models composed of qualitative features for which support can be evaluated (see Castillo et al 2024)
+rejection_posterior <- rejection_posterior %>% 
+  pivot_longer(HMC:REC) %>% 
+  nest_by(name) %>% 
+  mutate(replicas = name %in% c("MC3", "MCHMC", "MCREC")) %>% 
+  mutate(gradients = name %in% c("HMC", "MCHMC", "MCREC")) %>% 
+  mutate(autoc_proposals = # matched models
+           ifelse(name %in% c("HMC", "MCHMC"), F,
+           ifelse(name %in% c("REC", "MCREC"), T, 
+           NA))) %>% 
+  unnest(data)
+
+bf_inclusion <- function(df, column){
+  df %>% 
+    filter(!is.na({{column}})) %>% 
+    group_by(id, {{column}}) %>%
+    summarise(p = sum(value)) %>% 
+    group_by({{column}}) %>% 
+    summarise(L = sum(log(p))) %>% 
+    mutate(BF = exp(L - min(L)))
+}
+
+rejection_posterior %>% 
+  bf_inclusion(replicas)
+
+rejection_posterior %>% 
+  bf_inclusion(gradients)
+
+rejection_posterior %>% 
+  bf_inclusion(autoc_proposals)
+
 
 # Random Forests ----------------------------------------------------------
 set.seed(2024)
