@@ -174,6 +174,9 @@ rejection_posterior %>%
 
 
 # Random Forests ----------------------------------------------------------
+# thin simulations for speed
+
+
 set.seed(2024)
 model <- abcrf(model ~ R + A + TP + D + S, data=simulations)
 model$model.rf$prediction.error # OOB error
