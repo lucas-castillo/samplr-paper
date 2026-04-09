@@ -42,6 +42,90 @@ observed <- samplrData::castillo2024.rgmomentum.e1 %>%
   summarise(across(c(R, A, TP_full, D, S), \(x){mean(x, na.rm=T)})) %>% 
   rename(TP = "TP_full") %>% 
   ungroup
+
+
+# Rejection ABC -----------------------------------------------------------
+tolerance <- .1
+rejection_posterior <- tibble()
+
+# get mean, sd of measures from simulations
+standardizing_values <- simulations %>% 
+  pivot_longer(R:S, names_to = "measure") %>% 
+  group_by(measure) %>% 
+  summarise(across(value, c("M"=mean, "S"=sd), .names = "{.fn}"))
+
+# use to standardize simulations and observations
+z_simulations <- simulations %>% 
+  pivot_longer(R:S) %>% 
+  nest_by(name) %>% 
+  mutate(
+    M = standardizing_values$M[standardizing_values$measure == name],
+    S = standardizing_values$S[standardizing_values$measure == name]
+  ) %>% 
+  unnest(data) %>% 
+  mutate(z = (value - M) / S) %>% 
+  ungroup %>% 
+  pivot_wider(names_from = name, values_from = z, id_cols = c(model, i))
+
+z_observations <- observed %>% 
+  pivot_longer(R:S) %>% 
+  nest_by(name) %>% 
+  mutate(
+    M = standardizing_values$M[standardizing_values$measure == name],
+    S = standardizing_values$S[standardizing_values$measure == name]
+  ) %>% 
+  unnest(data) %>% 
+  mutate(z = (value - M) / S) %>% 
+  ungroup %>% 
+  pivot_wider(names_from = name, values_from = z, id_cols = id)
+
+# carry out rejection ABC
+for (r in 1:nrow(observed)){
+  z_simulations2 <- z_simulations
+  # get participant data
+  data <- unlist(as.vector(z_observations[r, c("R", "A", "TP", "D", "S")]))
+  
+  # and calculate euclidean distance to each simulation
+  euclidean_distance <- (apply(z_simulations, 1, \(r){
+    sum((data - as.numeric(r[c("R", "A", "TP", "D", "S")])) ** 2)
+  }))
+  
+  # remove simulations until we only have the closest tolerance%
+  model_p <- z_simulations2 %>% 
+    mutate(distance = euclidean_distance) %>% 
+    mutate(threshold = quantile(distance, tolerance)) %>% 
+    filter(distance <= threshold) %>% 
+    group_by(model) %>% 
+    tally %>% 
+    mutate(p = n / sum(n))
+  
+  # probability = proportion of models in this circle
+  model_p <- bind_rows(
+    model_p,
+    expand_grid(
+      model = models, n=0, p=0
+    )
+  ) %>% 
+    group_by(model) %>% 
+    summarise(across(n:p, sum))
+
+  # add to tibble
+  return_df <- model_p %>% 
+    select(-n) %>% 
+    pivot_wider(names_from = model, values_from = p) %>% 
+    mutate(id = z_observations[[r,"id"]])
+  
+  rejection_posterior <- bind_rows(rejection_posterior, return_df)
+}
+
+rejection_posterior %>% 
+  mutate(across(HMC:REC, \(x){log(x + 1e-8)})) %>% 
+  summarise(across(HMC:REC, sum)) %>% 
+  pivot_longer(everything()) %>% 
+  mutate(BF = exp(value - min(value)))
+
+
+# Random Forests ----------------------------------------------------------
 set.seed(2024)
 model <- abcrf(model ~ R + A + TP + D + S, data=simulations)
 model$model.rf$prediction.error # OOB error
