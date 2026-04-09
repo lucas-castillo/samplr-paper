@@ -63,7 +63,11 @@ rejection_posterior <- tibble()
 standardizing_values <- simulations %>% 
   pivot_longer(R:S, names_to = "measure") %>% 
   group_by(measure) %>% 
-  summarise(across(value, c("M"=mean, "S"=sd), .names = "{.fn}"))
+  summarise(across(
+    value, 
+    c("M"=\(x){mean(x, na.rm=T)}, "S"=\(x){sd(x, na.rm=T)}), 
+    .names = "{.fn}")
+  )
 
 # use to standardize simulations and observations
 z_simulations <- simulations %>% 
@@ -104,7 +108,7 @@ for (r in 1:nrow(observed)){
   # remove simulations until we only have the closest tolerance%
   model_p <- z_simulations2 %>% 
     mutate(distance = euclidean_distance) %>% 
-    mutate(threshold = quantile(distance, tolerance)) %>% 
+    mutate(threshold = quantile(distance, tolerance, na.rm=T)) %>% 
     filter(distance <= threshold) %>% 
     group_by(model) %>% 
     tally %>% 
@@ -133,7 +137,8 @@ rejection_posterior %>%
   mutate(across(HMC:REC, \(x){log(x + 1e-8)})) %>% 
   summarise(across(HMC:REC, sum)) %>% 
   pivot_longer(everything()) %>% 
-  mutate(BF = exp(value - min(value)))
+  arrange(desc(value)) %>% 
+  mutate(BF = exp(value - nth(value, 2)))
 
 
 # Random Forests ----------------------------------------------------------
