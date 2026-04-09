@@ -180,6 +180,7 @@ model$model.rf$prediction.error # OOB error
 prediction <- predict(model, obs = observed, training = simulations)
 
 # get posterior -----------------------------------------------------------
+
 # get training record (or load from cache)
 if ("training_record.RData" %in% list.files("cache")){
   load("cache/training_record.RData")
@@ -205,6 +206,12 @@ posterior <- posterior %>%
   mutate(gradient = model %in% c("REC", "MCHMC", "MCREC")) %>%
   mutate(momentum = ifelse(model %in% c("REC", "MCREC"), T, ifelse(model %in% c("HMC", "MCHMC"), F, NA)))
 
+posterior %>% 
+  pivot_wider(names_from = model, values_from = p, id_cols = id) %>% 
+  summarise(across(MH:MCREC, \(x){sum(log(x + 1e-8))})) %>% 
+  pivot_longer(everything()) %>% 
+  arrange(desc(value)) %>% 
+  mutate(BF = exp(value - nth(value, 2)))
 
 (A <- posterior %>% 
   group_by(id) %>% 
@@ -291,5 +298,5 @@ BCD
 '
 A + B + C + D + plot_layout(design = layout)
 
-ggsave("plots/RG_ABC.png", width=w, height=w/1.44, dpi=300)
+ggsave(plot = A, "plots/RG_ABC.png", width=w, height=w/1.44, dpi=300)
 
