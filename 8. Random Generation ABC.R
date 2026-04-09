@@ -21,18 +21,29 @@ if ("simulations.RData" %in% list.files("cache")){
 } else {
   simulations <- tibble()
   for (model in models){
-    for (i in 1:1000){
-      simulations <- rbind(
-        simulations,
-        prior() %>% 
-          simulate(model, params=.) %>% 
-          get_measures() %>% 
-          mutate(model, i)
-      )
+    temp <- foreach(
+      i = 1:10000, 
+      .combine = "rbind", .packages = c("magrittr", "dplyr")
+    ) %dopar% {
+      prior() %>% 
+        simulate(model, params=.) %>% 
+        get_measures() %>% 
+        mutate(model, i)
     }
+    simulations <- rbind(simulations, temp)
   }
   save(simulations, file = "cache/simulations.RData")  
 }
+
+# Remove NA values
+simulations <- simulations %>% 
+  drop_na() %>% 
+  # and remove simulations so prior is even
+  group_by(model) %>% 
+  mutate(N = n()) %>% 
+  ungroup %>% 
+  filter(i <= min(N)) %>% 
+  select(-N)
 
 simulations <- simulations %>% 
   mutate(model = factor(model, levels=models))
