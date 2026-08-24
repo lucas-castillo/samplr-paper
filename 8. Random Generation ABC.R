@@ -25,10 +25,11 @@ if ("simulations.RData" %in% list.files("cache")){
       i = 1:10000, 
       .combine = "rbind", .packages = c("magrittr", "dplyr")
     ) %dopar% {
-      prior() %>% 
-        simulate(model, params=.) %>% 
+      p <- prior()
+      simulate(model, params=p) %>% 
         get_measures() %>% 
-        mutate(model, i)
+        mutate(model, i) %>% 
+        cbind(as_tibble(p))
     }
     simulations <- rbind(simulations, temp)
   }
@@ -56,6 +57,9 @@ observed <- samplrData::castillo2024.rgmomentum.e1 %>%
 
 
 # Rejection ABC -----------------------------------------------------------
+# We'll remove parameters for now
+simulations <- simulations %>% 
+  select(R:i)
 tolerance <- .1
 rejection_posterior <- tibble()
 
